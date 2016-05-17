@@ -10,6 +10,9 @@ app.get('/', function(req, res){
     res.sendfile('index.html');
 });
 
+var maxTweetBufferLength = process.env.MAX_TWEET_BUFFER_LENGTH || 100;
+var tweetBufferSpeed = process.env.TWEET_BUFFER_SPEED || 300;
+
 var buffer = [];
 
 io.on('connection', function(socket){
@@ -20,7 +23,7 @@ io.on('connection', function(socket){
     buffer.forEach(function(tweet, index) {
         setTimeout(function() {
             io.emit('tweet', tweet);
-        }, index * 1000);
+        }, index * tweetBufferSpeed);
     });
 });
 
@@ -44,7 +47,7 @@ t.on('tweet', function (tweet) {
         io.emit('tweet', tweet);
 
         buffer.push(tweet);
-        if(buffer.length > 100) {
+        if(buffer.length > maxTweetBufferLength) {
             buffer.splice(0, 1);
         }
     }
