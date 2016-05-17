@@ -10,7 +10,7 @@ app.get('/', function(req, res){
     res.sendfile('index.html');
 });
 
-var maxTweetBufferLength = process.env.MAX_TWEET_BUFFER_LENGTH || 100;
+var maxTweetBufferLength = process.env.MAX_TWEET_BUFFER_LENGTH || 250;
 var tweetBufferSpeed = process.env.TWEET_BUFFER_SPEED || 300;
 
 var buffer = [];
