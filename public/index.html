@@ -58,6 +58,8 @@
 			t.redraw();
 		}
 
+        var markerBuffer = [];
+
 		var markerize = function(tweet) {
 
             var coords = tweet.geo.coordinates;
@@ -69,21 +71,27 @@
 			m.setOpacity(0);
 			$(m._icon).animate({opacity: 1}, {
 				duration: 2000,
-				step: function(obj) {
-					console.log();
-				},
 				complete: function() {
-						$(m._icon).animate({opacity: 0}, {
-					duration: 600000,
-					step: function(obj) {
-						console.log();
-					},
+                    $(m._icon).animate({opacity: 0}, {
+					duration: 300000,
 					complete: function() {
 						map.removeLayer(m);
 					}
 				});
 				}
 			});
+
+            markerBuffer.push(m);
+
+            if(markerBuffer.length > 250) {
+                var oldest = markerBuffer.splice(0, 1)[0];
+                $(oldest._icon).animate({opacity: 0}, {
+                    duration: 1000,
+                    complete: function() {
+                        map.removeLayer(oldest);
+                    }
+                });
+            }
 		};
 
 		var socket = io();
