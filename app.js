@@ -110,3 +110,22 @@ t.track('Magandang umaga');
 t.track('Magandangumaga');
 t.track('早上好');
 t.track('Miremengjes');
+
+function getRandomInRange(from, to, fixed) {
+    return (Math.random() * (to - from) + from).toFixed(fixed) * 1;
+}
+
+function createRandomTweet() {
+    return {
+        text: "Hello",
+        user: {
+            screen_name: "bello"
+        },
+        geo: {
+            coordinates: [
+                getRandomInRange(-90, 90, 6),
+                getRandomInRange(-180, 180, 6)
+            ]
+        }
+    };
+}

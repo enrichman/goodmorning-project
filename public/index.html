@@ -69,24 +69,26 @@
             m.bindPopup("<b>@"+tweet.user.screen_name+"</b><br>"+tweet.text);
 
 			m.setOpacity(0);
-			$(m._icon).animate({opacity: 1}, {
-				duration: 2000,
-				complete: function() {
-                    $(m._icon).animate({opacity: 0}, {
-					duration: 300000,
-					complete: function() {
+
+			// fadeIn
+			$(m._icon).animate({opacity: 1}, { duration: 2000 });
+
+			// fadeOut
+			setTimeout(function() {
+				$(m._icon).animate({opacity: 0}, {
+					duration: 2000,
+					complete: function () {
 						map.removeLayer(m);
 					}
 				});
-				}
-			});
+			}, (3 * 60 * 1000));
 
             markerBuffer.push(m);
 
-            if(markerBuffer.length > 250) {
+            if(markerBuffer.length > 100) {
                 var oldest = markerBuffer.splice(0, 1)[0];
-                $(oldest._icon).animate({opacity: 0}, {
-                    duration: 1000,
+                $(oldest._icon).animate({ opacity: 0 }, {
+                    duration: 2000,
                     complete: function() {
                         map.removeLayer(oldest);
                     }
