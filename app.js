@@ -1,13 +1,19 @@
+require('dotenv').config();
+
 var express = require('express');
 var app = express();
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
-var Twitter = require('node-tweet-stream')
+var Twitter = require('node-tweet-stream');
 
 app.use(express.static('public'));
 
 app.get('/', function(req, res){
     res.sendfile('index.html');
+});
+
+app.get('/mapbox', function(req, res) {
+    res.json({ access_token: process.env.MAPBOX_ACCESS_TOKEN });
 });
 
 var maxTweetBufferLength = process.env.MAX_TWEET_BUFFER_LENGTH || 250;
@@ -32,12 +38,11 @@ http.listen(port, function(){
     console.log('listening on *:'+port);
 });
 
-
 var t = new Twitter({
-    consumer_key: 'DVJ7d5Hj2rQiGXzdkOTo4290c',
-    consumer_secret: 'JYwXWoyGsfAQKUKGNEYWKTveqxCUZ14yje404KZy4MS8642gbh',
-    token: '227471111-wgIRXCQR8hJBUGMqY60ekQFLKXPnjhJC8RrKQu6q',
-    token_secret: 'vrV5e7dBAjhB00B9da8Z3bnGfH3GEKbo7YwFyCrLOUs31'
+    consumer_key:       process.env.TW_CONSUMER_KEY,
+    consumer_secret:    process.env.TW_CONSUMER_SECRET,
+    token:              process.env.TW_TOKEN,
+    token_secret:       process.env.TW_SECRET
 });
 
 

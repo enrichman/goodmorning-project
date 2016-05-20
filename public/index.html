@@ -38,68 +38,73 @@
 	<div id="map"></div>
 
 	<script>
-		var accessToken = 'pk.eyJ1IjoiZW5yaWNobWFuIiwiYSI6ImNpbzl6anEwYzAwMTZ2bW01c2I0bWNha2MifQ.CffLlUQBo77yPc5lJIKFBQ';
-		// Replace 'mapbox.streets' with your map id.
-		var mapboxTiles = L.tileLayer('https://api.mapbox.com/v4/mapbox.dark/{z}/{x}/{y}.png?access_token=' + accessToken, {
-			attribution: '© <a href="https://www.mapbox.com/map-feedback/">Mapbox</a> © <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
-			style: 'mapbox://styles/mapbox/dark-v9'
-		});
 
-		var map = L.map('map')
-			.addLayer(mapboxTiles)
-			.setView([-60, 10], 2);
+		$(function() {
+			$.get('/mapbox').then(function(result) {
 
-		var t = L.terminator();
-		t.addTo(map);
-		setInterval(function(){updateTerminator(t)}, 500);
-		function updateTerminator(t) {
-			var t2 = L.terminator();
-			t.setLatLngs(t2.getLatLngs());
-			t.redraw();
-		}
-
-        var markerBuffer = [];
-
-		var markerize = function(tweet) {
-
-            var coords = tweet.geo.coordinates;
-
-			var icon = L.icon({  iconUrl: 'dot.png', iconSize: [15, 15] });
-			var m = L.marker(coords, { icon: icon }).addTo(map);
-            m.bindPopup("<b>@"+tweet.user.screen_name+"</b><br>"+tweet.text);
-
-			m.setOpacity(0);
-
-			// fadeIn
-			$(m._icon).animate({opacity: 1}, { duration: 2000 });
-
-			// fadeOut
-			setTimeout(function() {
-				$(m._icon).animate({opacity: 0}, {
-					duration: 2000,
-					complete: function () {
-						map.removeLayer(m);
-					}
+				var mapboxTiles = L.tileLayer('https://api.mapbox.com/v4/mapbox.dark/{z}/{x}/{y}.png?access_token=' + result.access_token, {
+					attribution: '© <a href="https://www.mapbox.com/map-feedback/">Mapbox</a> © <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+					style: 'mapbox://styles/mapbox/dark-v9'
 				});
-			}, (3 * 60 * 1000));
 
-            markerBuffer.push(m);
+				var map = L.map('map')
+						.addLayer(mapboxTiles)
+						.setView([-60, 10], 2);
 
-            if(markerBuffer.length > 100) {
-                var oldest = markerBuffer.splice(0, 1)[0];
-                $(oldest._icon).animate({ opacity: 0 }, {
-                    duration: 2000,
-                    complete: function() {
-                        map.removeLayer(oldest);
-                    }
-                });
-            }
-		};
+				var t = L.terminator();
+				t.addTo(map);
+				setInterval(function(){updateTerminator(t)}, 500);
+				function updateTerminator(t) {
+					var t2 = L.terminator();
+					t.setLatLngs(t2.getLatLngs());
+					t.redraw();
+				}
 
-		var socket = io();
-		socket.on('tweet', function(tweet){
-			console.log('Tweet arrived: ' + tweet.id + ' coords: '+tweet.geo.coordinates);
-			markerize(tweet)
+				var markerBuffer = [];
+
+				var markerize = function(tweet) {
+
+					var coords = tweet.geo.coordinates;
+
+					var icon = L.icon({  iconUrl: 'dot.png', iconSize: [15, 15] });
+					var m = L.marker(coords, { icon: icon }).addTo(map);
+					m.bindPopup("<b>@"+tweet.user.screen_name+"</b><br>"+tweet.text);
+
+					m.setOpacity(0);
+
+					// fadeIn
+					$(m._icon).animate({opacity: 1}, { duration: 2000 });
+
+					// fadeOut
+					setTimeout(function() {
+						$(m._icon).animate({opacity: 0}, {
+							duration: 2000,
+							complete: function () {
+								map.removeLayer(m);
+							}
+						});
+					}, (3 * 60 * 1000));
+
+					markerBuffer.push(m);
+
+					if(markerBuffer.length > 100) {
+						var oldest = markerBuffer.splice(0, 1)[0];
+						$(oldest._icon).animate({ opacity: 0 }, {
+							duration: 2000,
+							complete: function() {
+								map.removeLayer(oldest);
+							}
+						});
+					}
+				};
+
+				var socket = io();
+				socket.on('tweet', function(tweet){
+					console.log('Tweet arrived: ' + tweet.id + ' coords: '+tweet.geo.coordinates);
+					markerize(tweet)
+				});
+
+			});
 		});
 
 	</script>
