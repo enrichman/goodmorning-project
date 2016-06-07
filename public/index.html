@@ -12,7 +12,8 @@
 	<script type="text/javascript" src="//api.mapbox.com/mapbox-gl-js/v0.18.0/mapbox-gl.js"></script>
 	<script type="text/javascript" src="//rawgithub.com/joergdietrich/Leaflet.Terminator/master/L.Terminator.js"></script>
 	<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/socket.io/1.4.6/socket.io.min.js"></script>
-	<script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/2.2.3/jquery.min.js"></script>
+    <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/2.2.3/jquery.min.js"></script>
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.13.0/moment.min.js"></script>
 
 	<style type="text/css">
 		body { margin: 0px; padding: 0px; }
@@ -35,18 +36,20 @@
 			margin: 5px;
 			text-align: center;
 			float: right;
-			width: 150px;
+			width: 250px;
 		}
 	</style>
 </head>
 <body>
     <div id="name">
 		<div id="box">
-			Made with ❤ in Rome
-			<br>
-			by Enrico Candino
-			<br>
+            #goodmorning - Live Tweets
+            <br/>
+            Made with ❤ in Rome
+			<br/>
             <div style="padding-top: 5px;">
+                Enrico Candino
+                &nbsp;
                 <a href="https://github.com/enrichman/goodmorning-project" target="_blank">
                     <img width="16px" src="github.png"/>
                 </a>
@@ -89,7 +92,10 @@
 
 					var icon = L.icon({  iconUrl: 'dot.png', iconSize: [15, 15] });
 					var m = L.marker(coords, { icon: icon }).addTo(map);
-					m.bindPopup("<b>@"+tweet.user.screen_name+"</b><br>"+tweet.text);
+
+                    var timeAgo = moment.duration(Date.now() - parseInt(tweet.timestamp_ms)).humanize();
+                    var link = '<a href="https://twitter.com/statuses/'+tweet.id_str+'" target="_blank"> '+timeAgo+' ago</a>';
+					m.bindPopup("<b>@"+tweet.user.screen_name+"</b><br/>"+link+"<br/>"+tweet.text);
 
 					m.setOpacity(0);
 
