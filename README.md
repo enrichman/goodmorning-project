@@ -1,6 +1,8 @@
 # Good Morning Project
 
-It's a web application that shows you all the "good morning" tweets around the world in real time!
+[Good Morning Project](http://goodmorningproject.enricocandino.it/) shows you all the "good morning" tweets around the world in real time!
+
+Check it out: [http://goodmorningproject.enricocandino.it](http://goodmorningproject.enricocandino.it/) 
 
 To create your own just clone the project and create a `.env` file copying the `.env.example`,
 then add your Twitter an Mapbox API keys.
